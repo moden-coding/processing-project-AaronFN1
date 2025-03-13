@@ -20,7 +20,7 @@ public class App extends PApplet {
     // defining variables
     int groundHeight = 475;
     // dino variables
-    int dinoWidth = 40;
+    int dinoWidth = 30;
     int dinoHeight = 70;
     int dinoX;
     double dinoY;
@@ -30,7 +30,7 @@ public class App extends PApplet {
     double dinoTop;
     
     //cactus variables
-    int cactusWidth = 30;
+    int cactusWidth = 40;
     int cactusHeight = 68;
     double cactusX;
     int cactusY;
@@ -38,12 +38,13 @@ public class App extends PApplet {
     double cactusRight;
     int cactusTop;
     int cactusBottom;
-    int cactusStart = 1350;
+    int cactusStart;
 
     int scene;
     // scene 0 is the tutorial
-    // scene 1 is the game
-    // scene 2 is game over
+    // scene 1 is the game start
+    // scene 2 is the game
+    // scene 3 is game over
     int score;
     double velocity;
     double acceleration;
@@ -64,10 +65,10 @@ public class App extends PApplet {
     }
     
     public boolean collide(double leftObj1, double leftObj2, double rightObj1, double rightObj2, double topObj1, double topObj2, double bottomObj1, double bottomObj2){
-        if (bottomObj1 >= topObj2 && rightObj1 >= leftObj2 && leftObj1 <= rightObj2) {
+        if (rightObj1 >= leftObj2 && bottomObj1 >= topObj2 && leftObj1 <= (rightObj2-2)){
             return true;
         }
-        else{
+        else {
             return false;
         }
     }
@@ -80,9 +81,11 @@ public class App extends PApplet {
         fill(0, 0, 0);
         rect(0, 475, 1350, 5);
 
+        //reset / variable defining
         if (scene == 0){
-            dinoX = 50;
+            dinoX = 75;
             dinoY = groundHeight - dinoHeight;
+            cactusStart = 1350;
             cactusX = cactusStart;
             cactusY = groundHeight - cactusHeight;
             score = 0;
@@ -93,6 +96,9 @@ public class App extends PApplet {
 
         // dino
         fill(200, 0, 0);
+        // strokeWeight(2);
+        // stroke(0, 0, 0);
+        // noFill();
         rect(dinoX, Math.round(dinoY), dinoWidth, dinoHeight);
 
         // // find jump height
@@ -129,6 +135,8 @@ public class App extends PApplet {
 
         //cactus
         fill(0, 255, 0);
+        // strokeWeight(2);
+        // noFill();
         rect(Math.round(cactusX), cactusY, cactusWidth, cactusHeight);
         if (scene == 1){
         cactusX -= 5;
@@ -138,13 +146,14 @@ public class App extends PApplet {
         }
 
         cactusLeft = cactusX;
-        cactusRight = cactusX - cactusWidth;
+        cactusRight = cactusX + cactusWidth;
         cactusTop = cactusY;
         cactusBottom = cactusY + cactusHeight;
 
         if (collide(dinoLeft, cactusLeft, dinoRight, cactusRight, dinoTop, cactusTop, dinoBottom, cactusBottom) == true ){
             scene = 2;
         }
+
         // score
         if (scene == 1) {
             score++;
@@ -152,7 +161,14 @@ public class App extends PApplet {
         if (scene == 1 || scene == 2) {
             fill(0, 0, 0);
             textSize(25);
-            text(score, 1250, 35);
+            textAlign(RIGHT);
+            text(score, width - 10, 35);
+        }
+        //add highscore that updates at game end
+        if (scene == 2){
+            textSize(50);
+            textAlign(CENTER); 
+            text("You lose! Press R to restart", width / 2, 250);
         }
     }
 }
