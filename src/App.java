@@ -16,11 +16,11 @@ public class App extends PApplet {
         size(1350, 800);
 
     }
-    
+
     // defining variables
     int groundHeight = 475;
     int highscore = 0;
-    
+
     // dino variables
     int dinoWidth = 30;
     int dinoHeight = 70;
@@ -30,31 +30,40 @@ public class App extends PApplet {
     int dinoRight;
     double dinoBottom;
     double dinoTop;
-    
-    //cactus variables
-    int cactusWidth;
-    int cactusHeight;
-    double cactusX;
-    int cactusY;
-    double cactusLeft;
-    double cactusRight;
-    int cactusTop;
-    int cactusBottom;
+
+    // cactus variables
+    int cactusWidthA;
+    int cactusWidthB;
+    int cactusHeightA;
+    int cactusHeightB;
+    double cactusXA;
+    double cactusXB;
+    int cactusYA;
+    int cactusYB;
+    double cactusLeftA;
+    double cactusLeftB;
+    double cactusRightA;
+    double cactusRightB;
+    int cactusTopA;
+    int cactusTopB;
+    int cactusBottomA;
+    int cactusBottomB;
     int cactusStart;
+    double cactusSpeed;
 
     int scene;
     // scene 0 is the tutorial
     // scene 1 is the game start
     // scene 2 is the game
     // scene 3 is game over
-    int score;
+    double score;
     double velocity;
     double acceleration;
     // double vertex = 1350;
     // double jumpHeight = 0;
 
     public void mousePressed() {
-        if (scene == 2){
+        if (scene == 2) {
             scene = 0;
         }
     }
@@ -66,35 +75,50 @@ public class App extends PApplet {
                 acceleration = .5;
                 velocity = -10.4;
             }
-        }
-        else if (key == 'r' || key == 'R'){
+        } else if (key == 'r' || key == 'R') {
             scene = 0;
         }
     }
-    
-    public void cactus(){
+
+    public void cactus() {
         fill(0, 255, 0);
-        rect(Math.round(cactusX), cactusY, cactusWidth, cactusHeight);
-        if (scene == 1){
-        cactusX -= 5;
+        rect(Math.round(cactusXA), cactusYA, cactusWidthA, cactusHeightA);
+        rect(Math.round(cactusXB), cactusYB, cactusWidthB, cactusHeightB);
+        if (scene == 1) {
+            cactusXA -= cactusSpeed;
+            cactusXB -= cactusSpeed;
+            if (cactusSpeed <= 25) {
+                cactusSpeed = (double) (5 + (score / 300));
+            }
         }
-        if (cactusX < 0){
-            cactusX = cactusStart;
-            cactusHeight = (int) random(35, 70);
-            cactusY = groundHeight - cactusHeight;
-            cactusWidth = (int) random(25, 55);
+        if (cactusXA < 0) {
+            cactusXA = cactusXB + (int) random((int) (300 + (cactusSpeed * 5)), (int) (1350 + (cactusSpeed * 5)));
+            cactusHeightA = (int) random(35, 70);
+            cactusYA = groundHeight - cactusHeightA;
+            cactusWidthA = (int) random(25, 55);
         }
-        cactusLeft = cactusX;
-        cactusRight = cactusX + cactusWidth;
-        cactusTop = cactusY;
-        cactusBottom = cactusY + cactusHeight;
+        if (cactusXB < 0) {
+            cactusXB = cactusXA + (int) random((int) (300 + (cactusSpeed * 5)), (int) (1350 + (cactusSpeed * 5)));
+            cactusHeightB = (int) random(35, 70);
+            cactusYB = groundHeight - cactusHeightB;
+            cactusWidthB = (int) random(25, 55);
+        }
+        cactusLeftA = cactusXA;
+        cactusRightA = cactusXA + cactusWidthA;
+        cactusTopA = cactusYA;
+        cactusBottomA = cactusYA + cactusHeightA;
+        cactusLeftB = cactusXB;
+        cactusRightB = cactusXB + cactusWidthB;
+        cactusTopA = cactusYA;
+        cactusTopB = cactusYB;
+        cactusBottomB = cactusYB + cactusHeightB;
     }
 
-    public boolean collide(double leftObj1, double leftObj2, double rightObj1, double rightObj2, double topObj1, double topObj2, double bottomObj1, double bottomObj2){
-        if (rightObj1 >= leftObj2 && bottomObj1 >= topObj2 && leftObj1 <= (rightObj2-2)){
+    public boolean collide(double leftObj1, double leftObj2, double rightObj1, double rightObj2, double topObj1,
+            double topObj2, double bottomObj1, double bottomObj2) {
+        if (rightObj1 >= leftObj2 && bottomObj1 >= topObj2 && leftObj1 <= (rightObj2 - 2)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -107,15 +131,20 @@ public class App extends PApplet {
         fill(0, 0, 0);
         rect(0, 475, 1350, 5);
 
-        //reset / variable defining
-        if (scene == 0){
+        // reset / variable defining
+        if (scene == 0) {
             dinoX = 75;
             dinoY = groundHeight - dinoHeight;
             cactusStart = 1350;
-            cactusX = cactusStart;
-            cactusHeight = (int) random(35, 70);
-            cactusWidth = (int) random(25, 55);
-            cactusY = groundHeight - cactusHeight;
+            cactusXA = cactusStart;
+            cactusXB = cactusXA + (int) random((int) (300 + (cactusSpeed * 5)), (int) (1350 + (cactusSpeed * 5)));
+            cactusHeightA = (int) random(35, 70);
+            cactusWidthA = (int) random(25, 55);
+            cactusHeightB = (int) random(35, 70);
+            cactusWidthB = (int) random(25, 55);
+            cactusYA = groundHeight - cactusHeightA;
+            cactusYB = groundHeight - cactusHeightB;
+            cactusSpeed = 5;
 
             score = 0;
             acceleration = 0;
@@ -132,19 +161,18 @@ public class App extends PApplet {
 
         // // find jump height
         // if (dinoY < vertex){
-        //     vertex = dinoY;
-        //     jumpHeight = (groundHeight - dinoHeight) - vertex;
-        //     System.out.println(jumpHeight);
+        // vertex = dinoY;
+        // jumpHeight = (groundHeight - dinoHeight) - vertex;
+        // System.out.println(jumpHeight);
         // }
 
-        //gravity
+        // gravity
         if (dinoY <= (groundHeight - dinoHeight)) {
-            if (scene == 1){
-            dinoY += velocity;
-            velocity += acceleration;
+            if (scene == 1) {
+                dinoY += velocity;
+                velocity += acceleration;
             }
         }
-
 
         // keep dino on gorund
         if (dinoY > (groundHeight - dinoHeight)) {
@@ -156,16 +184,21 @@ public class App extends PApplet {
         dinoBottom = dinoY + dinoHeight;
         dinoTop = dinoY;
 
-        //reset velocity and acceleration for efficiency
-        if (dinoY == (groundHeight - dinoHeight)){
+        // reset velocity and acceleration for efficiency
+        if (dinoY == (groundHeight - dinoHeight)) {
             velocity = 0;
             acceleration = 0;
         }
 
-        //cactus
+        // cactus
         cactus();
 
-        if (collide(dinoLeft, cactusLeft, dinoRight, cactusRight, dinoTop, cactusTop, dinoBottom, cactusBottom) == true ){
+        if (collide(dinoLeft, cactusLeftA, dinoRight, cactusRightA, dinoTop, cactusTopA, dinoBottom,
+                cactusBottomA) == true) {
+            scene = 2;
+        }
+        if (collide(dinoLeft, cactusLeftB, dinoRight, cactusRightB, dinoTop, cactusTopB, dinoBottom,
+                cactusBottomB) == true) {
             scene = 2;
         }
 
@@ -177,15 +210,15 @@ public class App extends PApplet {
             fill(0, 0, 0);
             textSize(25);
             textAlign(RIGHT);
-            text("HI:   " + highscore + "        " +score, width - 10, 35);
+            text("HI: " + highscore + "        " + (int) score, width - 10, 35);
         }
-        if (scene == 2 && score > highscore){
-            highscore = score;
+        if (scene == 2 && score > highscore) {
+            highscore = (int) score;
         }
 
-        if (scene == 2){
+        if (scene == 2) {
             textSize(50);
-            textAlign(CENTER); 
+            textAlign(CENTER);
             text("You lose! Click to restart", width / 2, 250);
         }
     }
