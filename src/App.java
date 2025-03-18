@@ -50,6 +50,9 @@ public class App extends PApplet {
     int cactusBottomB;
     int cactusStart;
     double cactusSpeed;
+    double cactusDistance;
+    double cactusRandomDistanceA;
+    double cactusRandomDistanceB;
 
     int scene;
     // scene 0 is the tutorial
@@ -79,41 +82,12 @@ public class App extends PApplet {
             scene = 0;
         }
     }
-
-    public void cactus() {
-        fill(0, 255, 0);
-        rect(Math.round(cactusXA), cactusYA, cactusWidthA, cactusHeightA);
-        rect(Math.round(cactusXB), cactusYB, cactusWidthB, cactusHeightB);
-        if (scene == 1) {
-            cactusXA -= cactusSpeed;
-            cactusXB -= cactusSpeed;
-            if (cactusSpeed <= 25) {
-                cactusSpeed = (double) (5 + (score / 300));
-            }
-        }
-        if (cactusXA < 0) {
-            cactusXA = cactusXB + (int) random((int) (300 + (cactusSpeed * 5)), (int) (1350 + (cactusSpeed * 5)));
-            cactusHeightA = (int) random(35, 70);
-            cactusYA = groundHeight - cactusHeightA;
-            cactusWidthA = (int) random(25, 55);
-        }
-        if (cactusXB < 0) {
-            cactusXB = cactusXA + (int) random((int) (300 + (cactusSpeed * 5)), (int) (1350 + (cactusSpeed * 5)));
-            cactusHeightB = (int) random(35, 70);
-            cactusYB = groundHeight - cactusHeightB;
-            cactusWidthB = (int) random(25, 55);
-        }
-        cactusLeftA = cactusXA;
-        cactusRightA = cactusXA + cactusWidthA;
-        cactusTopA = cactusYA;
-        cactusBottomA = cactusYA + cactusHeightA;
-        cactusLeftB = cactusXB;
-        cactusRightB = cactusXB + cactusWidthB;
-        cactusTopA = cactusYA;
-        cactusTopB = cactusYB;
-        cactusBottomB = cactusYB + cactusHeightB;
+    public double minimumJump(){
+        return cactusSpeed * 46;
     }
-
+    public int cactusRandomDistance() {
+        return (int) random((int) (300 + minimumJump()), (int) (1350 + (minimumJump())));
+    }
     public boolean collide(double leftObj1, double leftObj2, double rightObj1, double rightObj2, double topObj1,
             double topObj2, double bottomObj1, double bottomObj2) {
         if (rightObj1 >= leftObj2 && bottomObj1 >= topObj2 && leftObj1 <= (rightObj2 - 2)) {
@@ -137,7 +111,8 @@ public class App extends PApplet {
             dinoY = groundHeight - dinoHeight;
             cactusStart = 1350;
             cactusXA = cactusStart;
-            cactusXB = cactusXA + (int) random((int) (300 + (cactusSpeed * 5)), (int) (1350 + (cactusSpeed * 5)));
+            // cactusXB = cactusXA + cactusRandomDistance();
+            cactusXB = cactusXA + minimumJump();
             cactusHeightA = (int) random(35, 70);
             cactusWidthA = (int) random(25, 55);
             cactusHeightB = (int) random(35, 70);
@@ -191,7 +166,52 @@ public class App extends PApplet {
         }
 
         // cactus
-        cactus();
+        fill(0, 255, 0);
+        rect(Math.round(cactusXA), cactusYA, cactusWidthA, cactusHeightA);
+        rect(Math.round(cactusXB), cactusYB, cactusWidthB, cactusHeightB);
+        if (cactusXA < cactusXB) {
+            cactusDistance = cactusXB - cactusXA;
+        } else if (cactusXB < cactusXA) {
+            cactusDistance = cactusXA - cactusXB;
+        }
+        if (scene == 1) {
+            cactusXA -= cactusSpeed;
+            cactusXB -= cactusSpeed;
+            if (cactusSpeed <= 25) {
+                cactusSpeed = (double) (5 + (score / 300));
+            }
+        }
+        if (cactusXA < 0) {
+            cactusRandomDistanceA = cactusRandomDistance();
+            // cactusXA = cactusXB + cactusRandomDistanceA;
+            cactusXA = cactusXB + minimumJump();
+            if (cactusDistance < 300 + minimumJump()) {
+                cactusRandomDistanceA = cactusRandomDistance();
+            }
+            cactusHeightA = (int) random(35, 70);
+            cactusYA = groundHeight - cactusHeightA;
+            cactusWidthA = (int) random(25, 55);
+        }
+        if (cactusXB < 0) {
+            cactusRandomDistanceB = cactusRandomDistance();
+            // cactusXB = cactusXA + cactusRandomDistanceB;
+            cactusXB = cactusXA + minimumJump();
+            if (cactusDistance < 300 + minimumJump()) {
+                cactusRandomDistanceB = cactusRandomDistance();
+            }
+            cactusHeightB = (int) random(35, 70);
+            cactusYB = groundHeight - cactusHeightB;
+            cactusWidthB = (int) random(25, 55);
+        }
+        cactusLeftA = cactusXA;
+        cactusRightA = cactusXA + cactusWidthA;
+        cactusTopA = cactusYA;
+        cactusBottomA = cactusYA + cactusHeightA;
+        cactusLeftB = cactusXB;
+        cactusRightB = cactusXB + cactusWidthB;
+        cactusTopA = cactusYA;
+        cactusTopB = cactusYB;
+        cactusBottomB = cactusYB + cactusHeightB;
 
         if (collide(dinoLeft, cactusLeftA, dinoRight, cactusRightA, dinoTop, cactusTopA, dinoBottom,
                 cactusBottomA) == true) {
