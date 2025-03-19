@@ -10,6 +10,8 @@ public class App extends PApplet {
         background(255, 255, 255);
         noStroke();
 
+        // Cactus a = new Cactus();
+
     }
 
     public void settings() {
@@ -17,7 +19,7 @@ public class App extends PApplet {
 
     }
 
-    // defining variables
+    //#region defining variables
 
     int groundHeight = 475;
     int highscore = 0;
@@ -68,6 +70,7 @@ public class App extends PApplet {
     int cactusColorA;
     int cactusColorB;
     int cactusColorC;
+
     int scene;
     // scene 0 is the tutorial
     // scene 1 is the game start
@@ -79,12 +82,14 @@ public class App extends PApplet {
     // double vertex = 1350;
     // double jumpHeight = 0;
 
+    //#endregion
+    //#region inputs
     public void mousePressed() {
         if (scene == 2) {
             scene = 0;
         }
     }
-
+    
     public void keyPressed() {
         if (key == ' ' || keyCode == UP) {
             if (dinoY >= 395) {
@@ -94,9 +99,13 @@ public class App extends PApplet {
             }
         } else if (key == 'r' || key == 'R') {
             scene = 0;
+            if (score > highscore) {
+                highscore = (int) score;
+            }
         }
     }
-
+    //#endregion
+    //#region methods
     public double minimumJump() {
         return cactusSpeed * 45;
     }
@@ -114,15 +123,18 @@ public class App extends PApplet {
         } else {
             return false;
         }
-
+    }
+    //#endregion
     public void draw() {
+        //#region background elements
         // background
         background(255);
 
         // ground
         fill(0, 0, 0);
         rect(0, 475, 1350, 5);
-
+        //#endregion
+        //#region start/restart
         if (scene == 0) {
             dinoX = 75;
             dinoY = groundHeight - dinoHeight;
@@ -149,12 +161,10 @@ public class App extends PApplet {
             velocity = 0;
             scene = 1;
         }
-
+        //#endregion
+        //#region dino
         // dino
         fill(200, 0, 0);
-        // strokeWeight(2);
-        // stroke(0, 0, 0);
-        // noFill();
         rect(dinoX, Math.round(dinoY), dinoWidth, dinoHeight);
         // // find jump height
         // if (dinoY < vertex){
@@ -174,7 +184,7 @@ public class App extends PApplet {
         if (dinoY > (groundHeight - dinoHeight)) {
             dinoY = (groundHeight - dinoHeight);
         }
-        
+
         dinoLeft = dinoX;
         dinoRight = dinoX + dinoWidth;
         dinoBottom = dinoY + dinoHeight;
@@ -185,8 +195,8 @@ public class App extends PApplet {
             velocity = 0;
             acceleration = 0;
         }
-
-        // cactus
+        //#endregion
+        //#region cactus
         fill(50, cactusColorA, 50);
         rect(Math.round(cactusXA), cactusYA, cactusWidthA, cactusHeightA);
         fill(50, cactusColorB, 50);
@@ -253,7 +263,8 @@ public class App extends PApplet {
         cactusRightC = cactusXC + cactusWidthC;
         cactusTopC = cactusYC;
         cactusBottomC = cactusYC + cactusHeightC;
-
+        //#endregion
+        //#region collisions
         if (collide(dinoLeft, cactusLeftA, dinoRight, cactusRightA, dinoTop, cactusTopA, dinoBottom,
                 cactusBottomA) == true) {
             scene = 2;
@@ -266,8 +277,8 @@ public class App extends PApplet {
                 cactusBottomC) == true) {
             scene = 2;
         }
-
-        // score
+        //#endregion
+        //#region score and text
         if (scene == 1) {
             score++;
         }
@@ -285,5 +296,7 @@ public class App extends PApplet {
             textAlign(CENTER);
             text("You lose! Click to restart", width / 2, 250);
         }
+        
+        //#endregion
     }
 }
