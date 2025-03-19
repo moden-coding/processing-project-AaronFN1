@@ -18,6 +18,7 @@ public class App extends PApplet {
     }
 
     // defining variables
+
     int groundHeight = 475;
     int highscore = 0;
 
@@ -64,7 +65,9 @@ public class App extends PApplet {
     double cactusRandomDistanceA;
     double cactusRandomDistanceB;
     double cactusRandomDistanceC;
-
+    int cactusColorA;
+    int cactusColorB;
+    int cactusColorC;
     int scene;
     // scene 0 is the tutorial
     // scene 1 is the game start
@@ -111,7 +114,6 @@ public class App extends PApplet {
         } else {
             return false;
         }
-    }
 
     public void draw() {
         // background
@@ -121,7 +123,6 @@ public class App extends PApplet {
         fill(0, 0, 0);
         rect(0, 475, 1350, 5);
 
-        // reset / variable defining
         if (scene == 0) {
             dinoX = 75;
             dinoY = groundHeight - dinoHeight;
@@ -139,11 +140,14 @@ public class App extends PApplet {
             cactusYB = groundHeight - cactusHeightB;
             cactusYC = groundHeight - cactusHeightC;
             cactusSpeed = 5;
+            cactusColorA = (int) random(100, 255);
+            cactusColorB = (int) random(100, 255);
+            cactusColorC = (int) random(100, 255);
 
             score = 0;
             acceleration = 0;
-            scene = 1;
             velocity = 0;
+            scene = 1;
         }
 
         // dino
@@ -152,7 +156,6 @@ public class App extends PApplet {
         // stroke(0, 0, 0);
         // noFill();
         rect(dinoX, Math.round(dinoY), dinoWidth, dinoHeight);
-
         // // find jump height
         // if (dinoY < vertex){
         // vertex = dinoY;
@@ -168,11 +171,10 @@ public class App extends PApplet {
             }
         }
 
-        // keep dino on gorund
         if (dinoY > (groundHeight - dinoHeight)) {
             dinoY = (groundHeight - dinoHeight);
         }
-
+        
         dinoLeft = dinoX;
         dinoRight = dinoX + dinoWidth;
         dinoBottom = dinoY + dinoHeight;
@@ -185,11 +187,11 @@ public class App extends PApplet {
         }
 
         // cactus
-        fill(0, 255, 0);
+        fill(50, cactusColorA, 50);
         rect(Math.round(cactusXA), cactusYA, cactusWidthA, cactusHeightA);
-        fill(50, 150, 50);
+        fill(50, cactusColorB, 50);
         rect(Math.round(cactusXB), cactusYB, cactusWidthB, cactusHeightB);
-        fill(0, 200, 0);
+        fill(50, cactusBottomC, 50);
         rect(Math.round(cactusXC), cactusYC, cactusWidthC, cactusHeightC);
         if (cactusXA < cactusXB) {
             cactusDistanceAB = cactusXB - cactusXA;
@@ -220,6 +222,7 @@ public class App extends PApplet {
             cactusHeightA = (int) random(35, 70);
             cactusYA = groundHeight - cactusHeightA;
             cactusWidthA = (int) random(25, 55);
+            cactusColorA = (int) random(100, 255);
         }
         if (cactusXB < 0) {
             cactusRandomDistanceB = cactusRandomDistance();
@@ -228,6 +231,7 @@ public class App extends PApplet {
             cactusHeightB = (int) random(35, 70);
             cactusYB = groundHeight - cactusHeightB;
             cactusWidthB = (int) random(25, 55);
+            cactusColorB = (int) random(100, 255);
         }
         if (cactusXC < 0) {
             cactusRandomDistanceC = cactusRandomDistance();
@@ -235,6 +239,7 @@ public class App extends PApplet {
             cactusHeightC = (int) random(35, 70);
             cactusYC = groundHeight - cactusHeightC;
             cactusWidthC = (int) random(25, 55);
+            cactusColorC = (int) random(100, 255);
         }
         cactusLeftA = cactusXA;
         cactusRightA = cactusXA + cactusWidthA;
@@ -275,7 +280,6 @@ public class App extends PApplet {
         if (scene == 2 && score > highscore) {
             highscore = (int) score;
         }
-
         if (scene == 2) {
             textSize(50);
             textAlign(CENTER);
