@@ -9,9 +9,6 @@ public class App extends PApplet {
     public void setup() {
         background(255, 255, 255);
         noStroke();
-
-        // Cactus a = new Cactus();
-
     }
 
     public void settings() {
@@ -61,9 +58,9 @@ public class App extends PApplet {
     int cactusBottomC;
     int cactusStart;
     double cactusSpeed;
-    double cactusDistanceAB;
-    double cactusDistanceBC;
-    double cactusDistanceCA;
+    // double cactusDistanceAB;
+    // double cactusDistanceBC;
+    // double cactusDistanceCA;
     double cactusRandomDistanceA;
     double cactusRandomDistanceB;
     double cactusRandomDistanceC;
@@ -83,13 +80,15 @@ public class App extends PApplet {
     // double jumpHeight = 0;
 
     //#endregion
+   
     //#region inputs
+    //restarts on click after loss
     public void mousePressed() {
         if (scene == 2) {
             scene = 0;
         }
     }
-    
+    //jump and restart buttons
     public void keyPressed() {
         if (key == ' ' || keyCode == UP) {
             if (dinoY >= 395) {
@@ -105,17 +104,21 @@ public class App extends PApplet {
         }
     }
     //#endregion
+   
     //#region methods
+    //gets the minimum distance cactuses can be from each other
     public double minimumJump() {
         return cactusSpeed * 45;
     }
 
+    //randomizes the cactus distance
     public int cactusRandomDistance() {
         // make cactuses get closer together over time
         // return (int) random(Math.round(minimumJump()), (int) (1350-minimumJump()));
         return (int) random(Math.round(minimumJump()), 1350);
     }
 
+    //collision detection
     public boolean collide(double leftObj1, double leftObj2, double rightObj1, double rightObj2, double topObj1,
             double topObj2, double bottomObj1, double bottomObj2) {
         if (rightObj1 >= leftObj2 && bottomObj1 >= topObj2 && leftObj1 <= (rightObj2 - 2)) {
@@ -127,13 +130,14 @@ public class App extends PApplet {
     //#endregion
     public void draw() {
         //#region background elements
+
         // background
         background(255);
-
         // ground
         fill(0, 0, 0);
         rect(0, 475, 1350, 5);
         //#endregion
+        
         //#region start/restart
         if (scene == 0) {
             dinoX = 75;
@@ -162,9 +166,12 @@ public class App extends PApplet {
             scene = 1;
         }
         //#endregion
+        
         //#region dino
         // dino
-        fill(200, 0, 0);
+        strokeWeight(2);
+        stroke(0, 0, 0);
+        fill(150, 150, 150);
         rect(dinoX, Math.round(dinoY), dinoWidth, dinoHeight);
         // // find jump height
         // if (dinoY < vertex){
@@ -181,10 +188,12 @@ public class App extends PApplet {
             }
         }
 
+        //makes sure dino stays above the ground
         if (dinoY > (groundHeight - dinoHeight)) {
             dinoY = (groundHeight - dinoHeight);
         }
 
+        //collision defining
         dinoLeft = dinoX;
         dinoRight = dinoX + dinoWidth;
         dinoBottom = dinoY + dinoHeight;
@@ -196,28 +205,35 @@ public class App extends PApplet {
             acceleration = 0;
         }
         //#endregion
+        
         //#region cactus
+        //creates the actual cactuses
+        noStroke();
         fill(50, cactusColorA, 50);
         rect(Math.round(cactusXA), cactusYA, cactusWidthA, cactusHeightA);
         fill(50, cactusColorB, 50);
         rect(Math.round(cactusXB), cactusYB, cactusWidthB, cactusHeightB);
         fill(50, cactusBottomC, 50);
         rect(Math.round(cactusXC), cactusYC, cactusWidthC, cactusHeightC);
-        if (cactusXA < cactusXB) {
-            cactusDistanceAB = cactusXB - cactusXA;
-        } else if (cactusXB < cactusXA) {
-            cactusDistanceAB = cactusXA - cactusXB;
-        }
-        if (cactusXB < cactusXC) {
-            cactusDistanceBC = cactusXC - cactusXB;
-        } else if (cactusXC < cactusXB) {
-            cactusDistanceBC = cactusXB - cactusXC;
-        }
-        if (cactusXC < cactusXA) {
-            cactusDistanceCA = cactusXA - cactusXC;
-        } else if (cactusXA < cactusXC) {
-            cactusDistanceAB = cactusXC - cactusXA;
-        }
+        
+        // //didnt end up being useful
+        // if (cactusXA < cactusXB) {
+        //     cactusDistanceAB = cactusXB - cactusXA;
+        // } else if (cactusXB < cactusXA) {
+        //     cactusDistanceAB = cactusXA - cactusXB;
+        // }
+        // if (cactusXB < cactusXC) {
+        //     cactusDistanceBC = cactusXC - cactusXB;
+        // } else if (cactusXC < cactusXB) {
+        //     cactusDistanceBC = cactusXB - cactusXC;
+        // }
+        // if (cactusXC < cactusXA) {
+        //     cactusDistanceCA = cactusXA - cactusXC;
+        // } else if (cactusXA < cactusXC) {
+        //     cactusDistanceAB = cactusXC - cactusXA;
+        // }
+
+        //moving the cactus and increasing the speed
         if (scene == 1) {
             cactusXA -= cactusSpeed;
             cactusXB -= cactusSpeed;
@@ -226,6 +242,8 @@ public class App extends PApplet {
                 cactusSpeed = (double) (5 + (score / 300));
             }
         }
+
+        //resetting the cactuses after it passes the player
         if (cactusXA < 0) {
             cactusRandomDistanceA = cactusRandomDistance();
             cactusXA = cactusXC + cactusRandomDistanceA;
@@ -251,6 +269,8 @@ public class App extends PApplet {
             cactusWidthC = (int) random(25, 55);
             cactusColorC = (int) random(100, 255);
         }
+
+        //collision defining
         cactusLeftA = cactusXA;
         cactusRightA = cactusXA + cactusWidthA;
         cactusTopA = cactusYA;
@@ -264,7 +284,9 @@ public class App extends PApplet {
         cactusTopC = cactusYC;
         cactusBottomC = cactusYC + cactusHeightC;
         //#endregion
+        
         //#region collisions
+        //ends the game if it detects a collision
         if (collide(dinoLeft, cactusLeftA, dinoRight, cactusRightA, dinoTop, cactusTopA, dinoBottom,
                 cactusBottomA) == true) {
             scene = 2;
@@ -278,19 +300,27 @@ public class App extends PApplet {
             scene = 2;
         }
         //#endregion
+        
         //#region score and text
+        //increases score
         if (scene == 1) {
             score++;
         }
+
+        //shows score and highscore in the corner
         if (scene == 1 || scene == 2) {
             fill(0, 0, 0);
             textSize(25);
             textAlign(RIGHT);
             text("HI: " + highscore + "        " + (int) score, width - 10, 35);
         }
+
+        //checks if the score is a new highscore and updates highscore of it is
         if (scene == 2 && score > highscore) {
             highscore = (int) score;
         }
+
+        //losing screen
         if (scene == 2) {
             textSize(50);
             textAlign(CENTER);
